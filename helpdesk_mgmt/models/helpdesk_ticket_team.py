@@ -62,17 +62,17 @@ class HelpdeskTeam(models.Model):
     @api.depends("ticket_ids", "ticket_ids.stage_id")
     def _compute_todo_tickets(self):
         for record in self:
-            record.todo_ticket_ids = record.ticket_ids.filtered(
+            record.sudo().todo_ticket_ids = record.ticket_ids.filtered(
                 lambda ticket: not ticket.closed
             )
-            record.todo_ticket_count = len(record.todo_ticket_ids)
-            record.todo_ticket_count_unassigned = len(
+            record.sudo().todo_ticket_count = len(record.todo_ticket_ids)
+            record.sudo().todo_ticket_count_unassigned = len(
                 record.todo_ticket_ids.filtered(lambda ticket: not ticket.user_id)
             )
-            record.todo_ticket_count_unattended = len(
+            record.sudo().todo_ticket_count_unattended = len(
                 record.todo_ticket_ids.filtered(lambda ticket: ticket.unattended)
             )
-            record.todo_ticket_count_high_priority = len(
+            record.sudo().todo_ticket_count_high_priority = len(
                 record.todo_ticket_ids.filtered(lambda ticket: ticket.priority == "3")
             )
 
